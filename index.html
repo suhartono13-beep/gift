@@ -3,97 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Little Break · 呼吸空间</title>
+    <title>A Little Break · 呼吸空间 Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&display=swap');
-        body { font-family: 'Noto Serif SC', serif; transition: all 1s ease; }
-        .fade-text { transition: opacity 0.5s ease; }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500&display=swap');
+        body { font-family: 'Noto Serif SC', serif; transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        /* 呼吸环动画 */
+        @keyframes breathe {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.4); opacity: 0.9; filter: blur(4px); }
+        }
+        .breathing-ring { animation: breathe 8s infinite ease-in-out; animation-play-state: paused; }
+        .breathing-active .breathing-ring { animation-play-state: running; }
     </style>
 </head>
-<body id="bg-body" class="bg-gradient-to-br from-emerald-50 via-teal-50 to-stone-100 min-h-screen flex flex-col justify-center items-center p-6 text-stone-800">
+<body id="bg-body" class="bg-gradient-to-tr from-stone-100 via-zinc-100 to-slate-200 min-h-screen flex flex-col justify-center items-center p-6 text-stone-800 relative overflow-hidden">
 
-    <div class="max-w-md w-full bg-white/40 backdrop-blur-xl rounded-3xl p-8 shadow-2xl shadow-stone-200/50 border border-white/60 text-center transition-all duration-500">
+    <div id="glow-light" class="absolute w-[350px] h-[350px] rounded-full bg-teal-200/30 blur-[80px] -z-10 transition-all duration-1000 ease-in-out transform -translate-y-12"></div>
+
+    <div class="max-w-md w-full bg-white/40 backdrop-blur-2xl rounded-[32px] p-8 shadow-[0_22px_70px_rgba(0,0,0,0.05)] border border-white/70 text-center transition-all duration-500 hover:shadow-[0_22px_80px_rgba(0,0,0,0.08)]">
         
-        <div class="flex justify-center mb-6">
-            <span id="theme-icon" class="text-3xl animate-bounce duration-[3000ms]">🌲</span>
+        <div class="flex justify-between items-center mb-8 px-2">
+            <span id="theme-tag" class="text-[10px] tracking-[0.2em] uppercase bg-stone-900/5 text-stone-600 px-3 py-1 rounded-full font-medium transition-all duration-500">
+                FOREST AREA
+            </span>
+            <span id="theme-icon" class="text-2xl transform hover:rotate-12 transition-transform duration-300">🌲</span>
         </div>
 
-        <h1 class="text-xl font-medium tracking-widest mb-3 text-stone-900">
-            A Little Break
-        </h1>
-        
-        <p id="theme-desc" class="fade-text text-sm text-stone-500 leading-relaxed min-h-[60px] flex items-center justify-center px-4">
-            “送你一个没有负担的网页。如果屏幕前的你正感到一丝疲惫，不如切个喜欢的氛围，给心情按个暂停键。”
-        </p>
+        <div class="min-h-[110px] flex flex-col justify-center items-center px-2 mb-6">
+            <p id="theme-desc" class="text-base text-stone-700 leading-relaxed font-light tracking-wide"></p>
+        </div>
 
-        <div class="mt-8 mb-6">
-            <button onclick="switchTheme()" class="bg-stone-900/90 hover:bg-stone-800 text-stone-100 text-xs tracking-widest px-6 py-3 rounded-full transition-all duration-300 shadow-md transform active:scale-95">
-                切 换 边 界 氛围
+        <div class="space-y-4 mb-8">
+            <button onclick="switchTheme()" class="w-full bg-stone-900/90 hover:bg-stone-800 text-stone-100 text-xs tracking-[0.15em] py-3.5 rounded-2xl transition-all duration-300 shadow-sm active:scale-[0.98] font-medium">
+                切 换 边 界 氛 围
+            </button>
+            
+            <button id="breathe-btn" onclick="toggleBreathe()" class="w-full bg-white/60 hover:bg-white/90 text-stone-700 text-xs tracking-[0.15em] py-3.5 rounded-2xl transition-all duration-300 border border-stone-200/50 active:scale-[0.98] flex items-center justify-center gap-2">
+                <span id="breathe-dot" class="w-2 h-2 rounded-full bg-stone-400 transition-all duration-500"></span>
+                <span id="breathe-btn-text">开启 4-4 呼吸放松</span>
             </button>
         </div>
 
-        <div class="pt-6 border-t border-stone-200/50 text-[10px] tracking-widest text-stone-400 flex justify-between items-center px-2">
-            <span>DESIGNED BY CODE</span>
-            <span>祝你今天愉快 ☀️</span>
+        <div id="breathe-visualizer" class="h-0 opacity-0 overflow-hidden transition-all duration-700 ease-in-out flex flex-col items-center justify-center">
+            <div class="relative w-20 h-20 flex items-center justify-center mb-4">
+                <div id="breathe-ring-1" class="breathing-ring absolute inset-0 rounded-full border-2 border-stone-400/30"></div>
+                <div id="breathe-ring-2" class="breathing-ring absolute inset-2 rounded-full bg-stone-400/10"></div>
+                <span id="breathe-hint" class="text-xs text-stone-500 font-light tracking-widest">吸气</span>
+            </div>
+        </div>
+
+        <div class="pt-6 border-t border-stone-200/40 text-[10px] tracking-[0.2em] text-stone-400/80 flex justify-between items-center px-1">
+            <span>EDITION 2.0</span>
+            <span class="hover:text-stone-600 cursor-default transition-colors">PEACE & QUIET 🤍</span>
         </div>
     </div>
 
     <script>
-        // 预设的 4 种高级感氛围
+        // 氛围配置仓库
         const themes = [
             {
+                tag: "FOREST AREA",
                 icon: "🌲",
-                bg: "bg-gradient-to-br from-emerald-50 via-teal-50 to-stone-100",
-                text: "“森林原野：像在林间深呼吸一样，把积攒的压力都释放掉吧。”",
-                textColor: "text-stone-800"
+                bg: "bg-gradient-to-tr from-emerald-50 via-teal-50 to-stone-100",
+                glow: "bg-emerald-200/40",
+                text: "森林原野：像在林间深呼吸一样，把积攒的屏幕压力都释放掉吧。",
+                textColor: "text-stone-800",
+                btnTagBg: "bg-stone-900/5",
+                btnTagText: "text-stone-600"
             },
             {
+                tag: "TWILIGHT GLOW",
                 icon: "🌆",
-                bg: "bg-gradient-to-br from-orange-100 via-rose-50 to-indigo-100",
-                text: "“日落晚霞：收集了一抹温柔的晚霞送给你，祝你傍晚快乐。”",
-                textColor: "text-stone-800"
+                bg: "bg-gradient-to-tr from-amber-50 via-rose-50 to-indigo-100",
+                glow: "bg-rose-200/40",
+                text: "日落晚霞：收集了一抹不被打扰的温柔晚霞。祝你傍晚快乐，下班顺心。",
+                textColor: "text-stone-800",
+                btnTagBg: "bg-rose-950/5",
+                btnTagText: "text-rose-700"
             },
             {
+                tag: "DEEP SEA",
                 icon: "🌊",
-                bg: "bg-gradient-to-br from-indigo-900 via-slate-900 to-blue-950",
-                text: "“深海静谧：进入白噪音模式，把白天的喧嚣都隔绝在屏幕之外。”",
-                textColor: "text-stone-200"
+                bg: "bg-gradient-to-tr from-slate-900 via-indigo-950 to-blue-950",
+                glow: "bg-blue-500/20",
+                text: "深海静谧：自动开启免打扰模式，把白天的喧嚣都隔绝在屏幕之外。",
+                textColor: "text-stone-200",
+                btnTagBg: "bg-white/10",
+                btnTagText: "text-indigo-200"
             },
             {
+                tag: "COZY CAFE",
                 icon: "☕",
-                bg: "bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100/60",
-                text: "“午后咖啡：暖洋洋的松弛感，适合发呆、听歌、摸摸鱼。”",
-                textColor: "text-amber-950"
+                bg: "bg-gradient-to-tr from-amber-50/80 via-orange-50 to-stone-200/70",
+                glow: "bg-amber-200/40",
+                text: "午后咖啡：提供一点暖洋洋的松弛感，适合听歌、放空、或者微微发呆。",
+                textColor: "text-amber-950",
+                btnTagBg: "bg-amber-950/5",
+                btnTagText: "text-amber-800"
             }
         ];
 
         let currentThemeIndex = 0;
+        let typingTimer = null;
 
+        // 打字机核心函数
+        function typeWriter(text, i, fnCallback) {
+            const element = document.getElementById('theme-desc');
+            if (i < text.length) {
+                element.innerHTML = text.substring(0, i + 1) + '<span class="animate-pulse">|</span>';
+                typingTimer = setTimeout(function() {
+                    typeWriter(text, i + 1, fnCallback)
+                }, 50); // 打字速度（毫秒）
+            } else if (typeof fnCallback == 'function') {
+                element.innerHTML = text; // 打完后移除光标
+            }
+        }
+
+        // 切换主题
         function switchTheme() {
-            // 切换到下一个主题
             currentThemeIndex = (currentThemeIndex + 1) % themes.length;
             const theme = themes[currentThemeIndex];
 
             const body = document.getElementById('bg-body');
+            const glow = document.getElementById('glow-light');
             const icon = document.getElementById('theme-icon');
-            const desc = document.getElementById('theme-desc');
+            const tag = document.getElementById('theme-tag');
+            
+            // 切换背景与氛围灯
+            body.className = `${theme.bg} min-h-screen flex flex-col justify-center items-center p-6 ${theme.textColor} relative overflow-hidden`;
+            glow.className = `absolute w-[350px] h-[350px] rounded-full ${theme.glow} blur-[80px] -z-10 transition-all duration-1000 ease-in-out transform -translate-y-12`;
+            
+            // 切换文字标签与图标
+            icon.innerText = theme.icon;
+            tag.innerText = theme.tag;
+            tag.className = `text-[10px] tracking-[0.2em] uppercase px-3 py-1 rounded-full font-medium transition-all duration-500 ${theme.btnTagBg} ${theme.btnTagText}`;
 
-            // 触发淡入淡出效果
-            desc.style.opacity = 0;
-
-            setTimeout(() => {
-                // 更换背景类名（需要先清除之前的背景类）
-                body.className = `${theme.bg} min-h-screen flex flex-col justify-center items-center p-6 ${theme.textColor}`;
-                
-                // 更换内容
-                icon.innerText = theme.icon;
-                desc.innerText = theme.text;
-                
-                // 恢复显示
-                desc.style.opacity = 1;
-            }, 300);
+            // 触发打字机效果
+            clearTimeout(typingTimer);
+            typeWriter(theme.text, 0);
         }
+
+        // 呼吸练习控制
+        let breatheInterval = null;
+        let isBreathing = false;
+
+        function toggleBreathe() {
+            const visualizer = document.getElementById('breathe-visualizer');
+            const btnText = document.getElementById('breathe-btn-text');
+            const dot = document.getElementById('breathe-dot');
+            const hint = document.getElementById('breathe-hint');
+            const container = document.getElementById('breathe-visualizer');
+
+            isBreathing = !isBreathing;
+
+            if (isBreathing) {
+                // 展开视觉面板
+                visualizer.classList.remove('h-0', 'opacity-0');
+                visualizer.classList.add('h-28', 'opacity-100', 'mt-4');
+                btnText.innerText = "结束呼吸练习";
+                dot.classList.remove('bg-stone-400');
+                dot.classList.add('bg-emerald-500', 'animate-ping');
+                container.classList.add('breathing-active');
+
+                // 呼吸文案循环 (4秒吸气，4秒呼气)
+                let toggle = true;
+                hint.innerText = "吸气...";
+                breatheInterval = setInterval(() => {
+                    toggle = !toggle;
+                    hint.innerText = toggle ? "吸气..." : "呼气...";
+                }, 4000);
+            } else {
+                // 关闭面板
+                visualizer.classList.add('h-0', 'opacity-0');
+                visualizer.classList.remove('h-28', 'opacity-100', 'mt-4');
+                btnText.innerText = "开启 4-4 呼吸放松";
+                dot.classList.remove('bg-emerald-500', 'animate-ping');
+                dot.classList.add('bg-stone-400');
+                container.classList.remove('breathing-active');
+
+                clearInterval(breatheInterval);
+                hint.innerText = "吸气";
+            }
+        }
+
+        // 页面首次加载自动运行一次打字机
+        window.onload = function() {
+            typeWriter(themes[0].text, 0);
+        };
     </script>
 </body>
 </html>
