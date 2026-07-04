@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Little Break · 呼吸空间</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400&display=swap');
+        body { font-family: 'Noto Serif SC', serif; transition: all 1s ease; }
+        .fade-text { transition: opacity 0.5s ease; }
+    </style>
+</head>
+<body id="bg-body" class="bg-gradient-to-br from-emerald-50 via-teal-50 to-stone-100 min-h-screen flex flex-col justify-center items-center p-6 text-stone-800">
+
+    <div class="max-w-md w-full bg-white/40 backdrop-blur-xl rounded-3xl p-8 shadow-2xl shadow-stone-200/50 border border-white/60 text-center transition-all duration-500">
+        
+        <div class="flex justify-center mb-6">
+            <span id="theme-icon" class="text-3xl animate-bounce duration-[3000ms]">🌲</span>
+        </div>
+
+        <h1 class="text-xl font-medium tracking-widest mb-3 text-stone-900">
+            A Little Break
+        </h1>
+        
+        <p id="theme-desc" class="fade-text text-sm text-stone-500 leading-relaxed min-h-[60px] flex items-center justify-center px-4">
+            “送你一个没有负担的网页。如果屏幕前的你正感到一丝疲惫，不如切个喜欢的氛围，给心情按个暂停键。”
+        </p>
+
+        <div class="mt-8 mb-6">
+            <button onclick="switchTheme()" class="bg-stone-900/90 hover:bg-stone-800 text-stone-100 text-xs tracking-widest px-6 py-3 rounded-full transition-all duration-300 shadow-md transform active:scale-95">
+                切 换 边 界 氛围
+            </button>
+        </div>
+
+        <div class="pt-6 border-t border-stone-200/50 text-[10px] tracking-widest text-stone-400 flex justify-between items-center px-2">
+            <span>DESIGNED BY CODE</span>
+            <span>祝你今天愉快 ☀️</span>
+        </div>
+    </div>
+
+    <script>
+        // 预设的 4 种高级感氛围
+        const themes = [
+            {
+                icon: "🌲",
+                bg: "bg-gradient-to-br from-emerald-50 via-teal-50 to-stone-100",
+                text: "“森林原野：像在林间深呼吸一样，把积攒的压力都释放掉吧。”",
+                textColor: "text-stone-800"
+            },
+            {
+                icon: "🌆",
+                bg: "bg-gradient-to-br from-orange-100 via-rose-50 to-indigo-100",
+                text: "“日落晚霞：收集了一抹温柔的晚霞送给你，祝你傍晚快乐。”",
+                textColor: "text-stone-800"
+            },
+            {
+                icon: "🌊",
+                bg: "bg-gradient-to-br from-indigo-900 via-slate-900 to-blue-950",
+                text: "“深海静谧：进入白噪音模式，把白天的喧嚣都隔绝在屏幕之外。”",
+                textColor: "text-stone-200"
+            },
+            {
+                icon: "☕",
+                bg: "bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100/60",
+                text: "“午后咖啡：暖洋洋的松弛感，适合发呆、听歌、摸摸鱼。”",
+                textColor: "text-amber-950"
+            }
+        ];
+
+        let currentThemeIndex = 0;
+
+        function switchTheme() {
+            // 切换到下一个主题
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const theme = themes[currentThemeIndex];
+
+            const body = document.getElementById('bg-body');
+            const icon = document.getElementById('theme-icon');
+            const desc = document.getElementById('theme-desc');
+
+            // 触发淡入淡出效果
+            desc.style.opacity = 0;
+
+            setTimeout(() => {
+                // 更换背景类名（需要先清除之前的背景类）
+                body.className = `${theme.bg} min-h-screen flex flex-col justify-center items-center p-6 ${theme.textColor}`;
+                
+                // 更换内容
+                icon.innerText = theme.icon;
+                desc.innerText = theme.text;
+                
+                // 恢复显示
+                desc.style.opacity = 1;
+            }, 300);
+        }
+    </script>
+</body>
+</html>
